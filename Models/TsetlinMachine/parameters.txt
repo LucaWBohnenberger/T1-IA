@@ -1,0 +1,4 @@
+=== Hiperparâmetros da Tsetlin Machine ===
+Número de Cláusulas por Classe: 410
+Limiar de Votação (T): 7
+Especificidade (s): 14.713708262719186
