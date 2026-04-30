@@ -13,16 +13,18 @@ Antes de seguirmos com o readme, só para que fique estruturado quem é responsa
 
 ## Estrutura do Projeto
 
-```
 /
 ├── Dados/
-│   ├── tic-tac-toe.data             # Dataset bruto original (UCI)
-│   ├── preprocessed.data            # Dados com as novas amostras geradas
-│   └── data_for_ml.data             # Dados numéricos prontos para treinamento
-├── models/                          # Salvem os modelos treinados aqui
-├── pre_processamento.py             # Script que gera os dados prontos para ML
-└── game.py                          # Script do jogo interativo e plotagem das previsões
-```
+│   ├── tic-tac-toe.data            # Dataset bruto original (UCI)
+│   ├── preprocessed.data           # Dados com as novas amostras geradas
+│   ├── data_for_ml.data            # Dados numéricos prontos para treinamento
+│   └── divididos/                  # Divisão do dataset para o modelo
+│       ├── train.csv               # Conjunto de treinamento
+│       ├── test.csv                # Conjunto de teste
+│       └── valid.csv               # Conjunto de validação
+├── models/                         # Salvem os modelos treinados aqui
+├── pre_processamento.py            # Script que gera os dados prontos para ML
+└── game.py                         # Script do jogo interativo e plotagem das previsões
 
 ## Pasta `Dados/`
 
@@ -70,7 +72,7 @@ Este script vai conter a interface/lógica principal do jogo da velha.
 
 ### O que precisamos implementar aqui juntos:
 
-- [] A mecânica do jogo (X e O alternando turnos)
+- [X] A mecânica do jogo (X e O alternando turnos)
 - [] Carregamento dos algoritmos salvos na pasta `models/`
 - [] A cada jogada feita pelo usuário, o estado atual do tabuleiro deve passar pelo mesmo processamento numérico e ser injetado nos modelos
 - [] Plotar na tela (seja via terminal ou interface gráfica) o resultado da previsão (X win, O win, tie ou not finish) para cada modelo, mostrando a confiança de cada um.
