@@ -3,6 +3,7 @@ from pathlib import Path
 import numpy as np
 import random
 import os
+from sklearn.model_selection import train_test_split
 
 SEED = 42
 random.seed(SEED)
@@ -152,7 +153,49 @@ X_encoded = pd.get_dummies(X, columns=X.columns, drop_first=True)
 map_classes = {"X win": 0, "O win": 1, "tie": 2, "not finish": 3}
 y = y.map(map_classes)
 
-
+y.name = "9"
 df_for_ml = pd.concat([X_encoded, y], axis=1)
 path = Path("Dados") / "data_for_ml.data"
+df_for_ml = df_for_ml.astype(int)
 df_for_ml.to_csv(path, index=False, header=None)
+
+print(df_for_ml.columns)
+# Separando em train, val, e teste
+
+# Separando 200 de cada classe
+df_balanced = df_for_ml.groupby("9", group_keys=False).apply(
+    lambda x: x.sample(n=200, random_state=SEED)
+)
+
+df_balanced = df_balanced.sample(frac=1, random_state=SEED).reset_index(drop=True)
+
+X = df_balanced.drop(columns=["9"])
+y = df_balanced["9"]
+
+X_train, X_temp, y_train, y_temp = train_test_split(
+    X, y, test_size=0.25, stratify=y, random_state=42
+)
+
+X_val, X_test, y_val, y_test = train_test_split(
+    X_temp,
+    y_temp,
+    test_size=0.6,  # 15/25
+    stratify=y_temp,
+    random_state=42,
+)
+
+train_df = X_train.copy()
+train_df["9"] = y_train
+
+val_df = X_val.copy()
+val_df["9"] = y_val
+
+test_df = X_test.copy()
+test_df["9"] = y_test
+
+base_dir = Path("Dados") / "Divididos"
+base_dir.mkdir(parents=True, exist_ok=True)
+
+train_df.to_csv(base_dir / "train.csv", index=False)
+val_df.to_csv(base_dir / "valid.csv", index=False)
+test_df.to_csv(base_dir / "test.csv", index=False)
