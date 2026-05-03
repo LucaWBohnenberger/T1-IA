@@ -32,6 +32,7 @@ num_features = X_train.shape[1]
 num_classes = len(set(y_train))
 
 
+# Optuna objective function para otimização dos hiperparâmetros do Tsetlin Machine, optuna funciona tentando maximizar a acurácia de validação, então a função retorna a acurácia calculada no conjunto de validação. Ele usa uma estratégia de busca inteligente baseada em logica de máxima posteriori.
 def objective(trial):
     # Definindo o espaço de busca de hiperparâmetros
     clauses = trial.suggest_int("num_clauses_per_class", 10, 500)
@@ -76,8 +77,6 @@ best_model.fit(X_train, y_train, epochs=30)
 best_model.save("model")
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-
-# ... (seu código anterior até o treinamento do best_model)
 
 # 1. Calculando previsões e métricas para TREINO
 y_pred_train = best_model.predict(X_train)
