@@ -13,18 +13,21 @@ Antes de seguirmos com o readme, só para que fique estruturado quem é responsa
 
 ## Estrutura do Projeto
 
+```text
 /
 ├── Dados/
 │   ├── tic-tac-toe.data            # Dataset bruto original (UCI)
 │   ├── preprocessed.data           # Dados com as novas amostras geradas
 │   ├── data_for_ml.data            # Dados numéricos prontos para treinamento
-│   └── divididos/                  # Divisão do dataset para o modelo
+│   └── divididos/                  # Divisão do dataset para avaliação
 │       ├── train.csv               # Conjunto de treinamento
 │       ├── test.csv                # Conjunto de teste
 │       └── valid.csv               # Conjunto de validação
-├── models/                         # Salvem os modelos treinados aqui
-├── pre_processamento.py            # Script que gera os dados prontos para ML
+├── models/                         # Diretório para armazenar os modelos treinados
+├── pre_processamento.py            # Script que prepara e divide os dados para ML
 └── game.py                         # Script do jogo interativo e plotagem das previsões
+
+``` 
 
 ## Pasta `Dados/`
 
