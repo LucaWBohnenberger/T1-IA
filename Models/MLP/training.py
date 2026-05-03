@@ -42,8 +42,6 @@ def objective(trial):
     momentum = trial.suggest_categorical("momentum", [0.0, 0.1, 0.5, 0.9])
     max_iter = trial.suggest_categorical("max_iter", [200, 500, 1000])
     model = MLP(
-        num_classes=num_classes,
-        num_features=num_features,
         hidden_layer_sizes=hidden_layer_sizes,
         activation=activation,
         solver=solver,
@@ -71,8 +69,6 @@ print(f"best validation accuracy: {study.best_value * 100:.2f}%")
 
 print("\ncheckpoint - retreining with bets hyperparameters")
 best_model = MLP(
-    num_classes=num_classes,
-    num_features=num_features,
     hidden_layer_sizes=study.best_params["hidden_layer_sizes"],
     activation=study.best_params["activation"],
     solver=study.best_params["solver"],
@@ -85,7 +81,7 @@ best_model = MLP(
 best_model.fit(X_train, y_train)
 best_model.save("model")
 
-def calcular_metricas(modelo, X, y_true):
+def calculate_metrics(modelo, X, y_true):
     y_pred = modelo.predict(X)
     acc = accuracy_score(y_true, y_pred)
     prec = precision_score(y_true, y_pred, average='weighted', zero_division=0)
@@ -93,9 +89,9 @@ def calcular_metricas(modelo, X, y_true):
     f1 = f1_score(y_true, y_pred, average='weighted', zero_division=0)
     return acc, prec, rec, f1
 
-acc_train, prec_train, rec_train, f1_train = calcular_metricas(best_model, X_train, y_train)
-acc_valid, prec_valid, rec_valid, f1_valid = calcular_metricas(best_model, X_valid, y_valid)
-acc_test, prec_test, rec_test, f1_test = calcular_metricas(best_model, X_test, y_test)
+acc_train, prec_train, rec_train, f1_train = calculate_metrics(best_model, X_train, y_train)
+acc_valid, prec_valid, rec_valid, f1_valid = calculate_metrics(best_model, X_valid, y_valid)
+acc_test, prec_test, rec_test, f1_test = calculate_metrics(best_model, X_test, y_test)
 
 out_file = "parameters.txt"
 with open(out_file, "w", encoding="utf-8") as f:
