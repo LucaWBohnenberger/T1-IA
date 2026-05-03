@@ -1,0 +1,9 @@
+=== RESULTADOS DO MODELO DECISION TREE ===
+Profundidade Máxima: 9
+Mínimo de Amostras para Divisão: 4
+Mínimo de Amostras por Folha: 2
+Critério de Divisão: entropy
+----------------------------------------
+Acurácia de Validação (Melhor Trial Optuna): 80.00%
+Acurácia de Teste (Dados Inéditos): 72.50%
+----------------------------------------
