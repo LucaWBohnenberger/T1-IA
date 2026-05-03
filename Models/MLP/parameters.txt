@@ -1,0 +1,27 @@
+RESULTS
+best hyperparameters (hyperparameters tunning)
+  hidden_layer_sizes: (16,)
+  activation: relu
+  solver: lbfgs
+  learning_rate_init: 0.9
+  momentum: 0.5
+  max_iter: 500
+----------------------------------------
+TRAINING METRICS
+Accuracy:  100.00%
+Precision: 100.00%
+Recall:    100.00%
+F1-Score:  100.00%
+----------------------------------------
+VALIDATION METRICS 
+Accuracy:  90.00%
+Precision: 90.93%
+Recall:    90.00%
+F1-Score:  89.76%
+----------------------------------------
+TEST METRICS 
+Accuracy:  84.17%
+Precision: 84.17%
+Recall:    84.17%
+F1-Score:  83.88%
+----------------------------------------
