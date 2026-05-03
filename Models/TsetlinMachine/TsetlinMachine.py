@@ -3,7 +3,7 @@ import numpy as np
 
 class TsetlinMachine:
     def __init__(
-        self, num_classes, num_features, num_clauses_per_class, T, s, num_states=256
+        self, num_classes, num_features, num_clauses_per_class, T, s, num_states=256, random_state=42
     ):
         self.num_classes = num_classes
         self.num_features = num_features
@@ -12,6 +12,9 @@ class TsetlinMachine:
         self.s = s
         self.num_states = num_states
         self.threshold = self.num_states // 2
+        
+        if random_state is not None:
+            np.random.seed(random_state)
 
         self.ta_states = np.random.choice(
             [self.threshold, self.threshold + 1],

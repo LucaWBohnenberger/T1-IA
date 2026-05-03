@@ -1,9 +1,25 @@
-=== RESULTADOS DO MODELO DECISION TREE ===
-Profundidade Máxima: 9
-Mínimo de Amostras para Divisão: 4
-Mínimo de Amostras por Folha: 2
-Critério de Divisão: entropy
+=== RESULTADOS DO MODELO ===
+Melhores Hiperparâmetros:
+  max_depth: 11
+  min_samples_split: 5
+  min_samples_leaf: 1
+  criterion: entropy
 ----------------------------------------
-Acurácia de Validação (Melhor Trial Optuna): 80.00%
-Acurácia de Teste (Dados Inéditos): 72.50%
+--- MÉTRICAS DE TREINAMENTO ---
+Acurácia:  95.00%
+Precision: 95.04%
+Recall:    95.00%
+F1-Score:  94.99%
+----------------------------------------
+--- MÉTRICAS DE VALIDAÇÃO ---
+Acurácia:  78.75%
+Precision: 78.49%
+Recall:    78.75%
+F1-Score:  78.39%
+----------------------------------------
+--- MÉTRICAS DE TESTE (DADOS INÉDITOS) ---
+Acurácia:  75.83%
+Precision: 76.02%
+Recall:    75.83%
+F1-Score:  75.24%
 ----------------------------------------

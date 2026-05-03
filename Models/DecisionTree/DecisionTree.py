@@ -8,7 +8,7 @@ class DecisionTree:
     
 
     def __init__(self, num_classes, num_features, max_depth=10, min_samples_split=2, 
-                 min_samples_leaf=1, criterion="gini"):
+                 min_samples_leaf=1, criterion="gini", random_state=42):
         """
         Inicializa a Árvore de Decisão.
 
@@ -26,6 +26,8 @@ class DecisionTree:
             Número mínimo de amostras em uma folha (default: 1)
         criterion : str, optional
             Função para medir a qualidade de uma divisão ('gini' ou 'entropy') (default: 'gini')
+        random_state : int, optional
+            Semente para reprodução (default: 42)
         """
         self.num_classes = num_classes
         self.num_features = num_features
@@ -39,7 +41,7 @@ class DecisionTree:
             min_samples_split=min_samples_split,
             min_samples_leaf=min_samples_leaf,
             criterion=criterion,
-            random_state=42
+            random_state=random_state
         )
 
     def fit(self, X, y, epochs=1):

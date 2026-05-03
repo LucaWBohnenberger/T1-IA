@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 import optuna
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # 1. Carregamento e Preparação dos Dados
 data_path = Path(__file__).resolve().parents[2] / "Dados" / "Divididos"
@@ -45,6 +46,7 @@ def objective(trial):
         min_samples_split=min_samples_split,
         min_samples_leaf=min_samples_leaf,
         criterion=criterion,
+        random_state=42
     )
 
     model.fit(X_train, y_train)
@@ -74,27 +76,56 @@ best_model = DecisionTree(
 
 best_model.fit(X_train, y_train)
 best_model.save("model")
+# Calculando previsões e métricas para TREINO
+y_pred_train = best_model.predict(X_train)
+acc_train = accuracy_score(y_train, y_pred_train)
+prec_train = precision_score(y_train, y_pred_train, average='weighted', zero_division=0)
+rec_train = recall_score(y_train, y_pred_train, average='weighted', zero_division=0)
+f1_train = f1_score(y_train, y_pred_train, average='weighted', zero_division=0)
 
+# Calculando previsões e métricas para VALIDAÇÃO
+y_pred_valid = best_model.predict(X_valid)
+acc_valid = accuracy_score(y_valid, y_pred_valid)
+prec_valid = precision_score(y_valid, y_pred_valid, average='weighted', zero_division=0)
+rec_valid = recall_score(y_valid, y_pred_valid, average='weighted', zero_division=0)
+f1_valid = f1_score(y_valid, y_pred_valid, average='weighted', zero_division=0)
+
+# Calculando previsões e métricas para TESTE
 y_pred_test = best_model.predict(X_test)
-test_accuracy = np.mean(y_pred_test == y_test) * 100
+acc_test = accuracy_score(y_test, y_pred_test)
+prec_test = precision_score(y_test, y_pred_test, average='weighted', zero_division=0)
+rec_test = recall_score(y_test, y_pred_test, average='weighted', zero_division=0)
+f1_test = f1_score(y_test, y_pred_test, average='weighted', zero_division=0)
 
+# 4. Salvando tudo no arquivo texto
 with open("parameters.txt", "w", encoding="utf-8") as f:
-    f.write("=== RESULTADOS DO MODELO DECISION TREE ===\n")
-    f.write(f"Profundidade Máxima: {study.best_params['max_depth']}\n")
-    f.write(f"Mínimo de Amostras para Divisão: {study.best_params['min_samples_split']}\n")
-    f.write(f"Mínimo de Amostras por Folha: {study.best_params['min_samples_leaf']}\n")
-    f.write(f"Critério de Divisão: {study.best_params['criterion']}\n")
+    f.write("=== RESULTADOS DO MODELO ===\n")
+    f.write("Melhores Hiperparâmetros:\n")
+    for key, value in study.best_params.items():
+        f.write(f"  {key}: {value}\n")
     f.write("-" * 40 + "\n")
-    f.write(
-        f"Acurácia de Validação (Melhor Trial Optuna): {study.best_value * 100:.2f}%\n"
-    )
-    f.write(f"Acurácia de Teste (Dados Inéditos): {test_accuracy:.2f}%\n")
+    
+    f.write("--- MÉTRICAS DE TREINAMENTO ---\n")
+    f.write(f"Acurácia:  {acc_train * 100:.2f}%\n")
+    f.write(f"Precision: {prec_train * 100:.2f}%\n")
+    f.write(f"Recall:    {rec_train * 100:.2f}%\n")
+    f.write(f"F1-Score:  {f1_train * 100:.2f}%\n")
+    f.write("-" * 40 + "\n")
+    
+    f.write("--- MÉTRICAS DE VALIDAÇÃO ---\n")
+    f.write(f"Acurácia:  {acc_valid * 100:.2f}%\n")
+    f.write(f"Precision: {prec_valid * 100:.2f}%\n")
+    f.write(f"Recall:    {rec_valid * 100:.2f}%\n")
+    f.write(f"F1-Score:  {f1_valid * 100:.2f}%\n")
+    f.write("-" * 40 + "\n")
+    
+    f.write("--- MÉTRICAS DE TESTE (DADOS INÉDITOS) ---\n")
+    f.write(f"Acurácia:  {acc_test * 100:.2f}%\n")
+    f.write(f"Precision: {prec_test * 100:.2f}%\n")
+    f.write(f"Recall:    {rec_test * 100:.2f}%\n")
+    f.write(f"F1-Score:  {f1_test * 100:.2f}%\n")
     f.write("-" * 40 + "\n")
 
-print(f"\nBusca finalizada!")
-print("Melhores Hiperparâmetros encontrados:")
-for key, value in study.best_params.items():
-    print(f"  {key}: {value}")
-print(f"Acurácia de Validação: {study.best_value * 100:.2f}%")
-print(f"Acurácia de Teste: {test_accuracy:.2f}%")
-print("Os resultados foram salvos em 'parameters.txt'.")
+print("\nBusca e avaliação finalizadas!")
+print("As 4 métricas para Treino, Validação e Teste foram salvas no arquivo 'parameters.txt'.")
+
