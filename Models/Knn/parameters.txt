@@ -1,8 +1,8 @@
 === RESULTADOS DO MODELO ===
 Melhores Hiperparâmetros:
-  n_neighbors: 15
+  n_neighbors: 19
   weights: distance
-  p: 1
+  p: 2
 ----------------------------------------
 --- MÉTRICAS DE TREINAMENTO ---
 Acurácia:  100.00%
@@ -11,14 +11,14 @@ Recall:    100.00%
 F1-Score:  100.00%
 ----------------------------------------
 --- MÉTRICAS DE VALIDAÇÃO ---
-Acurácia:  91.25%
-Precision: 92.98%
-Recall:    91.25%
-F1-Score:  91.08%
+Acurácia:  92.50%
+Precision: 93.81%
+Recall:    92.50%
+F1-Score:  92.52%
 ----------------------------------------
 --- MÉTRICAS DE TESTE (DADOS INÉDITOS) ---
-Acurácia:  85.00%
-Precision: 89.16%
-Recall:    85.00%
-F1-Score:  85.23%
+Acurácia:  93.33%
+Precision: 94.38%
+Recall:    93.33%
+F1-Score:  93.49%
 ----------------------------------------

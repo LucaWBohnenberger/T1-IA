@@ -30,9 +30,9 @@ TARGET_CLASSES = {
 ENSEMBLE_VOTE_WEIGHT = {
     "DecisionTree": 1.0,
     "Knn": 1.0,
-    "MLP": 1.5,
-    "SVM": 2.0,
-    "TsetlinMachine": 2.0,
+    "MLP": 1.0,
+    "SVM": 1.0,
+    "TsetlinMachine": 1.0,
 }
 
 def _ensemble_vote_weight(model_name):
