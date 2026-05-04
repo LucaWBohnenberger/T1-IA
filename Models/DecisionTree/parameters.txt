@@ -1,25 +1,25 @@
 === RESULTADOS DO MODELO ===
 Melhores Hiperparâmetros:
-  max_depth: 11
-  min_samples_split: 5
+  max_depth: 16
+  min_samples_split: 2
   min_samples_leaf: 1
   criterion: entropy
 ----------------------------------------
 --- MÉTRICAS DE TREINAMENTO ---
-Acurácia:  95.00%
-Precision: 95.04%
-Recall:    95.00%
-F1-Score:  94.99%
+Acurácia:  100.00%
+Precision: 100.00%
+Recall:    100.00%
+F1-Score:  100.00%
 ----------------------------------------
 --- MÉTRICAS DE VALIDAÇÃO ---
-Acurácia:  78.75%
-Precision: 78.49%
-Recall:    78.75%
-F1-Score:  78.39%
+Acurácia:  80.00%
+Precision: 79.68%
+Recall:    80.00%
+F1-Score:  79.61%
 ----------------------------------------
 --- MÉTRICAS DE TESTE (DADOS INÉDITOS) ---
-Acurácia:  75.83%
-Precision: 76.02%
-Recall:    75.83%
-F1-Score:  75.24%
+Acurácia:  84.17%
+Precision: 84.40%
+Recall:    84.17%
+F1-Score:  83.80%
 ----------------------------------------

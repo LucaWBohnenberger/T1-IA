@@ -1,9 +1,9 @@
 === RESULTADOS DO MODELO ===
 Melhores Hiperparâmetros:
-  C: 330.1883233175173
+  C: 4.715302808348456
   kernel: poly
   gamma: scale
-  degree: 4
+  degree: 5
 ----------------------------------------
 --- MÉTRICAS DE TREINAMENTO ---
 Acurácia:  100.00%
@@ -12,14 +12,14 @@ Recall:    100.00%
 F1-Score:  100.00%
 ----------------------------------------
 --- MÉTRICAS DE VALIDAÇÃO ---
-Acurácia:  100.00%
-Precision: 100.00%
-Recall:    100.00%
-F1-Score:  100.00%
+Acurácia:  98.75%
+Precision: 98.81%
+Recall:    98.75%
+F1-Score:  98.75%
 ----------------------------------------
 --- MÉTRICAS DE TESTE (DADOS INÉDITOS) ---
 Acurácia:  97.50%
-Precision: 97.50%
+Precision: 97.73%
 Recall:    97.50%
 F1-Score:  97.49%
 ----------------------------------------

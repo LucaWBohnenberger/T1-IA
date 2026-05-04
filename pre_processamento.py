@@ -162,12 +162,65 @@ df_for_ml.to_csv(path, index=False, header=None)
 print(df_for_ml.columns)
 # Separando em train, val, e teste
 
-# Separando 200 de cada classe
-df_balanced = df_for_ml.groupby("9", group_keys=False).apply(
-    lambda x: x.sample(n=200, random_state=SEED)
-)
+N_PER_CLASS = 200
+LABEL_COL = "9"
 
-df_balanced = df_balanced.sample(frac=1, random_state=SEED).reset_index(drop=True)
+
+def _farthest_first_indices(X: np.ndarray, n: int, rng: np.random.RandomState) -> np.ndarray:
+    """
+    Seleciona n índices espalhados no espaço de features (Hamming em vetores binários).
+    Heurística greedy tipo facility location: cada novo ponto maximiza a menor distância ao conjunto já escolhido.
+    """
+    m = X.shape[0]
+    if n >= m:
+        return np.arange(m)
+    first = int(rng.randint(m))
+    selected = [first]
+    dist_min = np.sum(X != X[first], axis=1).astype(np.float64)
+    dist_min[first] = -1.0
+    while len(selected) < n:
+        j = int(np.argmax(dist_min))
+        selected.append(j)
+        dist_min = np.minimum(dist_min, np.sum(X != X[j], axis=1).astype(np.float64))
+        dist_min[selected] = -1.0
+    return np.array(selected, dtype=int)
+
+
+def balanced_representative_subset(
+    df: pd.DataFrame,
+    label_col: str,
+    n_per_class: int,
+    seed: int,
+) -> pd.DataFrame:
+    """
+    Mantém exatamente n_per_class linhas por classe, mas em geral mais representativo que sorteio puro:
+    - elimina duplicatas exatas nas features (mesmo tabuleiro codificado não ocupa várias vagas);
+    - se ainda houver mais linhas únicas que n_per_class, usa farthest-first para cobrir melhor o espaço de estados.
+    Se houver menos linhas únicas que n_per_class, repete linhas (mesmo comportamento necessário para fechar o tamanho fixo).
+    """
+    rng = np.random.RandomState(seed)
+    feature_cols = [c for c in df.columns if c != label_col]
+    chunks = []
+    for cls in sorted(df[label_col].unique()):
+        sub = df[df[label_col] == cls].reset_index(drop=True)
+        uniq = sub.drop_duplicates(subset=feature_cols).reset_index(drop=True)
+        X = uniq[feature_cols].to_numpy(dtype=np.uint8, copy=False)
+        k = len(uniq)
+        if k <= n_per_class:
+            chunk = uniq.sample(
+                n=n_per_class,
+                replace=(k < n_per_class),
+                random_state=seed,
+            )
+        else:
+            idx = _farthest_first_indices(X, n_per_class, rng)
+            chunk = uniq.iloc[idx].reset_index(drop=True)
+        chunks.append(chunk)
+    out = pd.concat(chunks, axis=0, ignore_index=True)
+    return out.sample(frac=1, random_state=seed).reset_index(drop=True)
+
+
+df_balanced = balanced_representative_subset(df_for_ml, LABEL_COL, N_PER_CLASS, SEED)
 
 X = df_balanced.drop(columns=["9"])
 y = df_balanced["9"]

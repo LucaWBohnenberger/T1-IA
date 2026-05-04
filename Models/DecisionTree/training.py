@@ -3,17 +3,22 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 import optuna
+import joblib # <-- Import adicionado
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # 1. Carregamento e Preparação dos Dados
-data_path = Path(__file__).resolve().parents[2] / "Dados" / "Divididos"
+# Subindo dois níveis para chegar na raiz do projeto
+root_path = Path(__file__).resolve().parents[2] 
+data_path = root_path / "Dados" / "Divididos"
+
 df_train = pd.read_csv(data_path / "train.csv", sep=",")
 df_valid = pd.read_csv(data_path / "valid.csv", sep=",")
 df_test = pd.read_csv(data_path / "test.csv", sep=",")
 
-print(df_train.shape)
-print(df_valid.shape)
-print(df_test.shape)
+print("Shape dos dados:")
+print("Treino:", df_train.shape)
+print("Validação:", df_valid.shape)
+print("Teste:", df_test.shape)
 
 X_train = df_train.iloc[:, :-1].values
 y_train = df_train.iloc[:, -1].values
@@ -58,7 +63,7 @@ def objective(trial):
     return accuracy
 
 
-print("Iniciando a busca de hiperparâmetros com Optuna...")
+print("\nIniciando a busca de hiperparâmetros com Optuna...")
 study = optuna.create_study(direction="maximize")
 study.optimize(objective, n_trials=30)
 
@@ -75,7 +80,16 @@ best_model = DecisionTree(
 )
 
 best_model.fit(X_train, y_train)
-best_model.save("model")
+
+# --- ALTERAÇÃO AQUI: Salvando com Joblib ---
+models_dir = root_path / "Models"/ "DecisionTree"
+models_dir.mkdir(parents=True, exist_ok=True) # Garante que a pasta exista
+model_file = models_dir / "decision_tree.joblib"
+
+joblib.dump(best_model, model_file)
+print(f"[*] Modelo salvo com sucesso em: {model_file}")
+# -------------------------------------------
+
 # Calculando previsões e métricas para TREINO
 y_pred_train = best_model.predict(X_train)
 acc_train = accuracy_score(y_train, y_pred_train)
@@ -128,4 +142,3 @@ with open("parameters.txt", "w", encoding="utf-8") as f:
 
 print("\nBusca e avaliação finalizadas!")
 print("As 4 métricas para Treino, Validação e Teste foram salvas no arquivo 'parameters.txt'.")
-
