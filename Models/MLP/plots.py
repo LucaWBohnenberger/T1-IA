@@ -4,9 +4,9 @@ import numpy as np
 # dados hardcoded da primeira run. 
 # TODO: talvez deva rodar de novo se preciso
 labels = ['Accuracy', 'Precision', 'Recall', 'F1-Score']
-training_vals = [100.00, 100.00, 100.00, 100.00]
-validation_vals = [90.00, 90.93, 90.00, 89.76]
-test_vals = [84.17, 84.17, 84.17, 83.88]
+training_vals = [99.83, 99.83, 99.83, 99.83]
+validation_vals = [93.75, 94.47, 93.75, 93.72]
+test_vals = [91.67, 92.08, 91.67, 91.62]
 
 x = np.arange(len(labels))
 width = 0.25
@@ -18,7 +18,7 @@ rects2 = ax.bar(x, validation_vals, width, label='val', color='#3498db')
 rects3 = ax.bar(x + width, test_vals, width, label='test', color='#e74c3c')
 
 ax.set_ylabel('score (%)')
-ax.set_title('MLP performance')
+ax.set_title('MLP performance (8 neuronios)')
 ax.set_xticks(x)
 ax.set_xticklabels(labels)
 ax.set_ylim(0, 110)

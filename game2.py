@@ -172,8 +172,18 @@ def predict_ensemble(models, board, metrics, true_class):
     saida += f"[PREVISÃO DO ENSEMBLE]   => {resultado_final}\n"
     saida += f"[Votos Individuais] {detalhes}\n\n"
 
+    # saida += "--- PLACAR DE DESEMPENHO DA IA ---\n"
+    # # Printa o Ensemble primeiro, depois os modelos individuais
+    # ordem_print = ["Ensemble"] + [m[0] for m in models]
+    # for name in ordem_print:
+    #     if name in metrics:
+    #         acertos = metrics[name]["acertos"]
+    #         erros = metrics[name]["erros"]
+    #         total = acertos + erros
+    #         acc = (acertos / total) * 100 if total > 0 else 0
+    #         saida += f" {name:<15}: Acertos: {acertos:<2} | Erros: {erros:<2} | Acurácia: {acc:05.1f}%\n"
+
     saida += "--- PLACAR DE DESEMPENHO DA IA ---\n"
-    # Printa o Ensemble primeiro, depois os modelos individuais
     ordem_print = ["Ensemble"] + [m[0] for m in models]
     for name in ordem_print:
         if name in metrics:
@@ -183,7 +193,7 @@ def predict_ensemble(models, board, metrics, true_class):
             acc = (acertos / total) * 100 if total > 0 else 0
             saida += f" {name:<15}: Acertos: {acertos:<2} | Erros: {erros:<2} | Acurácia: {acc:05.1f}%\n"
 
-    return saida
+    return saida, vencedor_voto
 
 
 # --- LÓGICA DO JOGO ---
@@ -275,42 +285,42 @@ def play():
     # Imprime o tabuleiro vazio inicial e já faz a primeira predição do Ensemble
     print_board(board)
     true_class = get_true_class(board)
-    print(predict_ensemble(models, board, metrics, true_class))
+    #print(predict_ensemble(models, board, metrics, true_class))
+
+
+    out_text, ia_decision = predict_ensemble(models, board, metrics, true_class)
+    print(out_text)
 
     while True:
-        # ==========================================
-        # 1. TURNO DO JOGADOR (X)
-        # ==========================================
         player_move(board)
         print_board(board)
 
-        # Avalia o tabuleiro  após a sua jogada
         true_class = get_true_class(board)
-        print(predict_ensemble(models, board, metrics, true_class))
+        # print(predict_ensemble(models, board, metrics, true_class))
 
-        # Verifica se a sua jogada encerrou o jogo
-        if true_class == 0:
-            print("\n🎉 FIM DE JOGO! Você venceu o jogo!")
-            break
-        elif true_class == 2:
-            print("\n🤝 FIM DE JOGO! Deu velha! (Empate)")
+
+        out_text, ia_decision = predict_ensemble(models, board, metrics, true_class)
+        print(out_text)
+
+        if ia_decision != 3:
+            print(f"\n[x] IA decretou o FIM do jogo: {TARGET_CLASSES[ia_decision]}")
+            if ia_decision != true_class:
+                print(f"[!] A IA errou. true state do jogo era=: {TARGET_CLASSES[true_class]}")
             break
 
-        # ==========================================
-        # 2. TURNO DA MÁQUINA (O)
-        # ==========================================
+        # =============================
+        # essa parte eh o turno da maquina
         random_ai_move(board)
         print_board(board)
 
-        # Avalia o tabuleiro após a jogada da IA
         true_class = get_true_class(board)
-        print(predict_ensemble(models, board, metrics, true_class))
+        out_text, ia_decision = predict_ensemble(models, board, metrics, true_class)
+        print(out_text)
 
-        if true_class == 1:
-            print("\n💀 FIM DE JOGO! A IA venceu o jogo!")
-            break
-        elif true_class == 2:
-            print("\n🤝 FIM DE JOGO! Deu velha! (Empate)")
+        if ia_decision != 3: 
+            print(f"\n[x] IA decretou o FIM do jogo: {TARGET_CLASSES[ia_decision]}")
+            if ia_decision != true_class:
+                print(f"[!] A IA errou. true state do jogo era=: {TARGET_CLASSES[true_class]}")
             break
 
 
