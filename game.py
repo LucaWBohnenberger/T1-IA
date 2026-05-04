@@ -15,15 +15,15 @@ import Models.MLP.MLP as MLP
 from Models.TsetlinMachine.TsetlinMachine import TsetlinMachine
 
 # --- MAPEAMENTO DE MÓDULOS ---
-sys.modules['DecisionTree'] = DecisionTree
-sys.modules['MLP'] = MLP
+sys.modules["DecisionTree"] = DecisionTree
+sys.modules["MLP"] = MLP
 
 # --- MAPEAMENTO DE CLASSES ---
 TARGET_CLASSES = {
     0: "Vitória do X",
     1: "Vitória do O",
     2: "Empate",
-    3: "Jogo em andamento"
+    3: "Jogo em andamento",
 }
 
 # Pesos na votação do ensemble (demais modelos = 1.0).
@@ -31,12 +31,14 @@ ENSEMBLE_VOTE_WEIGHT = {
     "DecisionTree": 1.0,
     "Knn": 1.0,
     "MLP": 1.0,
-    "SVM": 1.0,
-    "TsetlinMachine": 1.0,
+    "SVM": 1.6,
+    "TsetlinMachine": 1.5,
 }
+
 
 def _ensemble_vote_weight(model_name):
     return ENSEMBLE_VOTE_WEIGHT.get(model_name, 1.0)
+
 
 def load_models(models_dir="Models"):
     base = pathlib.Path(models_dir)
@@ -70,10 +72,12 @@ def load_models(models_dir="Models"):
         # 3. MLP
         if Mlp_path.exists():
             try:
-                with open(Mlp_path, 'rb') as f:
+                with open(Mlp_path, "rb") as f:
                     carregado = pickle.load(f)
                 if isinstance(carregado, dict):
-                    mlp_model = next((v for k, v in carregado.items() if hasattr(v, 'predict')), None)
+                    mlp_model = next(
+                        (v for k, v in carregado.items() if hasattr(v, "predict")), None
+                    )
                     if mlp_model is None:
                         raise ValueError("Nenhum objeto com 'predict' encontrado.")
                 else:
@@ -99,6 +103,7 @@ def load_models(models_dir="Models"):
 
     return models
 
+
 def encode_board(board):
     features = []
     for row in board:
@@ -111,15 +116,17 @@ def encode_board(board):
                 features.extend([0, 0])
     return [features]
 
+
 def update_metrics(metrics, model_name, pred, true_class):
     """Atualiza o dicionário de pontuação."""
     if model_name not in metrics:
         metrics[model_name] = {"acertos": 0, "erros": 0}
-        
+
     if pred == true_class:
         metrics[model_name]["acertos"] += 1
     else:
         metrics[model_name]["erros"] += 1
+
 
 def predict_ensemble(models, board, metrics, true_class):
     """Faz a predição, avalia contra o resultado real e retorna o texto formatado."""
@@ -154,15 +161,17 @@ def predict_ensemble(models, board, metrics, true_class):
         update_metrics(metrics, name, p, true_class)
 
     # Formatação das strings para impressão
-    detalhes = " | ".join([f"{name[:4]}...: {TARGET_CLASSES.get(p, str(p))}" for name, p in predictions])
+    detalhes = " | ".join(
+        [f"{name[:4]}...: {TARGET_CLASSES.get(p, str(p))}" for name, p in predictions]
+    )
     resultado_final = TARGET_CLASSES.get(vencedor_voto, "Desconhecido")
     resultado_real = TARGET_CLASSES.get(true_class, "Desconhecido")
-    
+
     # Montando a saída visual
-    saida =  f"\n[STATUS REAL DO TABULEIRO] => {resultado_real}\n"
+    saida = f"\n[STATUS REAL DO TABULEIRO] => {resultado_real}\n"
     saida += f"[PREVISÃO DO ENSEMBLE]   => {resultado_final}\n"
     saida += f"[Votos Individuais] {detalhes}\n\n"
-    
+
     saida += "--- PLACAR DE DESEMPENHO DA IA ---\n"
     # Printa o Ensemble primeiro, depois os modelos individuais
     ordem_print = ["Ensemble"] + [m[0] for m in models]
@@ -173,10 +182,12 @@ def predict_ensemble(models, board, metrics, true_class):
             total = acertos + erros
             acc = (acertos / total) * 100 if total > 0 else 0
             saida += f" {name:<15}: Acertos: {acertos:<2} | Erros: {erros:<2} | Acurácia: {acc:05.1f}%\n"
-            
+
     return saida
 
+
 # --- LÓGICA DO JOGO ---
+
 
 def start_game():
     return [
@@ -185,25 +196,34 @@ def start_game():
         ["b", "b", "b"],
     ]
 
+
 def print_board(board):
     print()
     for row in board:
         print(" " + " | ".join(cell.upper() if cell != "b" else " " for cell in row))
         print("---+---+---")
 
+
 def get_empty_positions(board):
     return [(i, j) for i in range(3) for j in range(3) if board[i][j] == "b"]
 
+
 def check_winner(board):
     for i in range(3):
-        if board[i][0] == board[i][1] == board[i][2] != "b": return board[i][0]
-        if board[0][i] == board[1][i] == board[2][i] != "b": return board[0][i]
-    if board[0][0] == board[1][1] == board[2][2] != "b": return board[0][0]
-    if board[0][2] == board[1][1] == board[2][0] != "b": return board[0][2]
+        if board[i][0] == board[i][1] == board[i][2] != "b":
+            return board[i][0]
+        if board[0][i] == board[1][i] == board[2][i] != "b":
+            return board[0][i]
+    if board[0][0] == board[1][1] == board[2][2] != "b":
+        return board[0][0]
+    if board[0][2] == board[1][1] == board[2][0] != "b":
+        return board[0][2]
     return None
+
 
 def is_draw(board):
     return all(cell != "b" for row in board for cell in row)
+
 
 def get_true_class(board):
     """Mapeia o estado real do tabuleiro para a classe correspondente."""
@@ -216,6 +236,7 @@ def get_true_class(board):
         return 2
     else:
         return 3
+
 
 def player_move(board):
     while True:
@@ -233,6 +254,7 @@ def player_move(board):
         except ValueError:
             print("Entrada inválida! Digite dois números separados por espaço.")
 
+
 def random_ai_move(board):
     empty = get_empty_positions(board)
     if empty:
@@ -240,14 +262,15 @@ def random_ai_move(board):
         board[i][j] = "o"
         print(f"\nIA jogou na posição: {i} {j}")
 
+
 def play():
     models = load_models()
-    metrics = {} # Dicionário que vai guardar os acertos/erros durante a partida
+    metrics = {}  # Dicionário que vai guardar os acertos/erros durante a partida
     board = start_game()
-    
-    print("\n" + "="*40)
+
+    print("\n" + "=" * 40)
     print("Bem-vindo! Você é 'X'. A IA (Aleatória) é 'O'.")
-    print("="*40)
+    print("=" * 40)
 
     # Imprime o tabuleiro vazio inicial e já faz a primeira predição do Ensemble
     print_board(board)
@@ -260,11 +283,11 @@ def play():
         # ==========================================
         player_move(board)
         print_board(board)
-        
+
         # Avalia o tabuleiro  após a sua jogada
         true_class = get_true_class(board)
         print(predict_ensemble(models, board, metrics, true_class))
-        
+
         # Verifica se a sua jogada encerrou o jogo
         if true_class == 0:
             print("\n🎉 FIM DE JOGO! Você venceu o jogo!")
@@ -278,11 +301,10 @@ def play():
         # ==========================================
         random_ai_move(board)
         print_board(board)
-        
+
         # Avalia o tabuleiro após a jogada da IA
         true_class = get_true_class(board)
         print(predict_ensemble(models, board, metrics, true_class))
-        
 
         if true_class == 1:
             print("\n💀 FIM DE JOGO! A IA venceu o jogo!")
@@ -290,6 +312,7 @@ def play():
         elif true_class == 2:
             print("\n🤝 FIM DE JOGO! Deu velha! (Empate)")
             break
+
 
 if __name__ == "__main__":
     play()
