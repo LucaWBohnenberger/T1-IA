@@ -108,9 +108,9 @@ Este script vai conter a interface/lógica principal do jogo da velha.
 ### O que precisamos implementar aqui juntos:
 
 - [X] A mecânica do jogo (X e O alternando turnos)
-- [] Carregamento dos algoritmos salvos na pasta `Models/`
-- [] A cada jogada feita pelo usuário, o estado atual do tabuleiro deve passar pelo mesmo processamento numérico e ser injetado nos modelos
-- [] Plotar na tela (seja via terminal ou interface gráfica) o resultado da previsão (X win, O win, tie ou not finish) para cada modelo, mostrando a confiança de cada um.
+- [X] Carregamento dos algoritmos salvos na pasta `Models/`
+- [X] A cada jogada feita pelo usuário, o estado atual do tabuleiro deve passar pelo mesmo processamento numérico e ser injetado nos modelos
+- [X] Plotar na tela (seja via terminal ou interface gráfica) o resultado da previsão (X win, O win, tie ou not finish) para cada modelo, mostrando a confiança de cada um.
 
 ---
 
